@@ -4,8 +4,9 @@ const bodyParser = require('body-parser');
 const Url=require('./Url');
 const routes=require('./routes');
 const app = express();
-const PORT= 5000; 
-const MONGODB_URI = ''
+const PORT= 5500; 
+const MONGODB_URI = 'mongodb+srv://user123:User123@cluster0.ydbd6gy.mongodb.net/'
+
 mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true}

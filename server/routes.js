@@ -34,7 +34,19 @@ router.get('/:shortcode', async (req, res) => {
             res.redirect(url.originalUrl); 
 
         }
+        else{
+            res.status(400).json({error: 'URL not found'}
+            )
+        }
+    }
+    catch(err){
+        console.error("Error in retrieving URL:",err); 
+        res.status(500).json({error: 'Internal Server Error'}
+        )
+    }
         
     }
+); 
+
 
 module.exports = router;
