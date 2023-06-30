@@ -2,51 +2,33 @@ const shortid = require("shortid");
 const ValidUrl = require("valid-url");
 const router = require('express').Router();
 
-router.post('/shorten/new', async (req, res) => {
+router.post('/shorten', async (req, res) => {
   const { originalUrl } = req.body;
-  if (!ValidUrl.isUri(originalUrl)) {
-    return res.status(400).json({ error: 'Invalid URL' });
-  }
-  
-  try {
-    let url = await Url.findOne({ originalUrl });
-    if (url) {
-      res.json(url);
-    } else {
-      const shortcode = shortid.generate();
-      const shortUrl = `${req.headers.host}/${shortcode}`;
-      url = new Url({
-        originalUrl,
-        shortUrl
-      });
-      await url.save();
-      res.json(url);
+
+  if (ValidUrl.isUri(originalUrl)) {
+    try {
+      let url = await Url.findOne({ originalUrl });
+
+      if (url) {
+        res.json(url);
+      } else {
+        const shortCode = shortid.generate();
+        const shortUrl = `${req.headers.host}/${shortCode}`;
+        url = new Url({
+          originalUrl,
+          shortUrl
+        });
+        await url.save();
+        res.json(url);
+      }
+    } catch (error) {
+      console.error("Error saving URL: ", error);
+      res.status(500).json({ error: "Internal server error" });
     }
-  } catch (error) {
-    console.error("Error in URL shortening: ", error);
+  } else {
+    console.error("Please enter a valid URL");
+    res.status(400).json({ error: "Invalid URL" });
   }
 });
-router.get('/:shortcode', async (req, res) => {
-    const {shortcode} = req.params;
-    try{
-        const url=await Url.findOne({shortUrl: `${req.headers.host}/${shortcode}`});
-        if(url){
-            res.redirect(url.originalUrl); 
-
-        }
-        else{
-            res.status(400).json({error: 'URL not found'}
-            )
-        }
-    }
-    catch(err){
-        console.error("Error in retrieving URL:",err); 
-        res.status(500).json({error: 'Internal Server Error'}
-        )
-    }
-        
-    }
-); 
-
 
 module.exports = router;

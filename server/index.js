@@ -6,7 +6,7 @@ const routes=require('./routes');
 const app = express();
 const PORT= 5500; 
 const MONGODB_URI = 'mongodb+srv://user123:User123@cluster0.ydbd6gy.mongodb.net/'
-
+const cors=require('cors'); 
 mongoose.connect(MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true}
